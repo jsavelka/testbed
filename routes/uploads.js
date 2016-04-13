@@ -1,8 +1,9 @@
 var express = require('express');
 var multer = require('multer');
+var tika = require('tika');
 
 var router = express.Router();
-var upload = multer({ dest: 'uploads/' });
+var upload = multer({ dest: 'uploads/', limits: {fileSize: 5*1024*1024} });
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -14,8 +15,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', upload.single('file1'), function(req, res) {
-  res.status(200)
-    .send('OK!');
+  tika.text(req.file.path, {}, function(err, text) {
+    res.status(200)
+      .send(text);
+  });
 })
 
 module.exports = router;
