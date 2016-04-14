@@ -1,7 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  ul
-    li <a href='/uploads'>uploads</a>
+  div.container
+    div.row
+      div.col-sm-6.col-md-4.col-md-offset-4
+        h1.text-center.login-title Sign in
+          div.account-wall
+            img(class='profile-img', src='http://www.huntsvillelibrary.ca/en/eservices/resources/icon-person.png')
+            form(class='form-signin', action='/login', method='POST')
+              input(type='text', name='username' class='form-control', placeholder='Email',required, autofocus)
+              input(type='password', name='password' class='form-control', placeholder='Password', required)
+              button(class='btn btn-lg btn-primary btn-block', type='submit') Sign in
+              span.clearfix
+        //p.text-center
+        //  a(href='/signup', class='new-account') Create an account
+        #message
+        if message
+          p.text-center.error-message #{message}
