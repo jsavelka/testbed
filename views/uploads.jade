@@ -5,8 +5,8 @@ block content
     a(href='/signout') Sign out
   div.container
     h1.text-center Czech Court Decision Analyzer
-    form(enctype="multipart/form-data" method='POST')
-      input(type="file" name="file1")
+    form(enctype="multipart/form-data" method="POST")
+      input(type="file" name="file1" accept="text/*, application/msword, application/pdf, application/vnd.oasis.opendocument.text")
       br
       button(type="submit") Analyze
     if analyzedText
