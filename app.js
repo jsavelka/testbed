@@ -40,7 +40,7 @@ app.use(flash());
 var routes = require('./routes/index')(passport);
 
 app.use('/', routes);
-app.use('/uploads', uploads);
+app.use('/ccdanalyzer', uploads);
 
 var initPassport = require('./passport/init');
 initPassport(passport);

@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  p.text-right
+    a(href='/signout') Sign out
+  div.container
+    h1.text-center Czech Court Decision Analyzer
+    form(enctype="multipart/form-data" method='POST')
+      input(type="file" name="file1")
+      br
+      button(type="submit") Analyze
+    if analyzedText
+      br
+      p(style="white-space: pre-wrap") !{analyzedText}
