@@ -24,15 +24,19 @@ router.get('/', isAuthenticated, function(req, res, next) {
 });
 
 router.post('/', isAuthenticated, upload.single('file1'), function(req, res) {
-  tika.text(req.file.path, {}, function(err, text) {
+    tika.text(req.file.path, {}, function(err, text) {
+      try {
+        text = text.replace(/((EC|NCN|NCSN|NCU|ND|NODN,NON|NTDN|NTN|EAN|OPJN|CPJN|TCNU|TCU|TVNO|TZN|ZP|\d+)\s*[a-zA-Z]{1,4}\s*\d+\/\d+)/g, '<font style="background-color: yellow">$1</font>');
+        text = text.replace(/(((Pl)|I|II|III|IV)\.\s* ÚS(-st\.){0,1}\s*\d+\/\d+)/g, '<font style="background-color: yellow">$1</font>')
 
-    text = text.replace(/((EC|NCN|NCSN|NCU|ND|NODN,NON|NTDN|NTN|EAN|OPJN|CPJN|TCNU|TCU|TVNO|TZN|ZP|\d+)\s*[a-zA-Z]{1,4}\s*\d+\/\d+)/g, '<font style="background-color: yellow">$1</font>');
-    text = text.replace(/(((Pl)|I|II|III|IV)\.\s* ÚS(-st\.){0,1}\s*\d+\/\d+)/g, '<font style="background-color: yellow">$1</font>')
-
-    res.status(200)
-      .render('uploads', {analyzedText: text});
-    fs.unlink(req.file.path);
-  });
+        res.status(200)
+           .render('uploads', {analyzedText: text});
+      } catch(err) {
+        res.render('uploads', {analyzedText: 'Sorry, the file cannot be transformed to a plain text. If possible, please, save the file in different format (e.g., MS Word docx) and try again.'});
+      } finally {
+        fs.unlink(req.file.path);
+      };
+    });
 })
 
 module.exports = router;
