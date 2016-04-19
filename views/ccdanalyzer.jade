@@ -1,11 +1,9 @@
-extends layout
+extends authorized
 
 block content
-  p.text-right
-    a(href='/signout') Sign out
   div.container
     h1.text-center Czech Court Decision Analyzer
-    form(enctype="multipart/form-data" method="POST")
+    form(enctype="multipart/form-data" method="POST" action="/ccdanalyzer")
       input(type="file" name="file1")
       br
       button(type="submit") Analyze

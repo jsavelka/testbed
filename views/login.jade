@@ -8,12 +8,12 @@ block content
           div.account-wall
             img(class='profile-img', src='http://www.huntsvillelibrary.ca/en/eservices/resources/icon-person.png')
             form(class='form-signin', action='/login', method='POST')
-              input(type='text', name='username' class='form-control', placeholder='Email',required, autofocus)
+              input(type='text', name='username' class='form-control', placeholder='username',required, autofocus)
               input(type='password', name='password' class='form-control', placeholder='Password', required)
               button(class='btn btn-lg btn-primary btn-block', type='submit') Sign in
               span.clearfix
-        //p.text-center
-        //  a(href='/signup', class='new-account') Create an account
+        p.text-center
+          a(href='/signup', class='new-account') Create an account
         #message
         if message
           p.text-center.error-message #{message}

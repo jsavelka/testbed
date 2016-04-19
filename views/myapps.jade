@@ -1,0 +1,12 @@
+extends authorized
+
+block content
+  div.container
+    h1.text-center My Applications
+    if access.length > 0
+      ul
+        each entry in access
+          li
+           a(href='/'+entry)= entry
+    else
+      p Sorry, you are not authorized to use any applications.

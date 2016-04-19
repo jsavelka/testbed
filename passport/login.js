@@ -21,6 +21,7 @@ module.exports = function(passport) {
           console.log('Invalid Password');
           return done(null, false, req.flash('message', 'Invalid password'));
         }
+        console.log(user);
         return done(null, user);
       }
     );

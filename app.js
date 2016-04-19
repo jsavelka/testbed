@@ -9,7 +9,8 @@ var passport = require('passport');
 var expressSession = require('express-session');
 var flash = require('connect-flash');
 
-var uploads = require('./routes/uploads');
+var ccdanalyzer = require('./routes/ccdanalyzer');
+var usslinterpret = require('./routes/usslinterpret');
 var dbConfig = require('./db');
 
 var app = express();
@@ -32,7 +33,7 @@ app.use(passport.session());
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
@@ -40,7 +41,8 @@ app.use(flash());
 var routes = require('./routes/index')(passport);
 
 app.use('/', routes);
-app.use('/ccdanalyzer', uploads);
+app.use('/ccdanalyzer', ccdanalyzer);
+app.use('/usslinterpret', usslinterpret);
 
 var initPassport = require('./passport/init');
 initPassport(passport);

@@ -1,0 +1,19 @@
+extends authorized
+
+block content
+  div.container.text-center
+    h1 United States Statutory Law Interpretation
+  div.container.text-center
+    form(enctype="application/x-www-form-urlencoded" method="POST" action="/usslinterpret")
+      input(type="text" name="query" size="40" placeholder="Enter a term of interest")
+      button(type="submit") Interpret
+  if query
+    div.container
+      if results.length > 0
+        p Showing results for "#{query}":
+        ol
+          each entry, index in results
+            li
+              a(href=urls[index])= entry
+      else
+        p No results for "#{query}".
