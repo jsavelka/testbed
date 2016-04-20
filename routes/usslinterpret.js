@@ -1,10 +1,13 @@
 var express = require('express');
 var https = require('https');
+var request = require('request');
 var StringDecoder = require('string_decoder').StringDecoder;
+var openNLP = require('opennlp');
 
 var utils = require('../utils');
 
 var router = express.Router();
+var sentenceDetector = new openNLP().sentenceDetector;
 
 router.get('/',
     utils.isAuthenticated,
@@ -35,47 +38,44 @@ router.post('/',
     });
     response.on('end', function() {
       var results = JSON.parse(json).results;
-      var listing = [];
-      var urls = [];
-      for (var i=0; i<results.length; i++) {
-        listing.push(results[i].caseName);
-        urls.push('https://www.courtlistener.com' + results[i].absolute_url);
-      }
-      res.status(200)
-         .render('usslinterpret', {results: listing, urls: urls, query: req.body.query});
+      var decisions = [];
+      var numPending = results.length;
+      results.forEach(function(result) {
+        decisions.push({
+          title: result.caseName,
+          url: 'https://www.courtlistener.com' + result.absolute_url,
+          sentences: []
+        });
+        numPending--;
+        if (numPending === 0) {
+          generateSentences(decisions, req, res);
+        }
+      })
     });
   }).end();
-
-
 });
 
-function processResult(result) {
-  var processedResult = {
-    title: result.caseName,
-    url: 'https://www.courtlistener.com' + result.absolute_url,
-    sentences: []
-  }
+function generateSentences(decisions, req, res) {
+  var numPending = decisions.length;
+  var regexpQuery = new RegExp(req.body.query);
+  decisions.forEach(function(decision) {
+    request(decision.url).pipe(request.put("http://localhost:9998/tika", function(error, resp, body) {
+      sentenceDetector.sentDetect(body, function(err, sentences) {
+        decision.sentences = sentences.filter(function(value) {
+          if (value.match(regexpQuery) !== null) {
+            return true;
+          } else {
+            return false;}
+        });
+        numPending--;
+        if (numPending === 0) {
+          res.status(200)
+             .render('usslinterpret', {decisions: decisions, query: req.body.query});
+        }
+      });
+    }));
 
-  var options = {
-    method: 'GET',
-    host: 'www.courtlistener.com',
-    path: processedResult.url,
-    Authorization: 'Token c8195c3d4348cf69554e87e559a9e95ed5e54d83',
-    accept: 'application/json'
-  }
-
-  https.request(options, function(response) {
-    var json = '';
-    var decoder = new StringDecoder('utf8');
-    response.on('data', function(data) {
-      json += decoder.write(data);
-    });
-    response.on('end', function() {
-      console.log(json);
-    });
-  }).end();
-
-
+  });
 }
 
 module.exports = router;

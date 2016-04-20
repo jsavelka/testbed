@@ -9,11 +9,14 @@ block content
       button(type="submit") Interpret
   if query
     div.container
-      if results.length > 0
+      if decisions.length > 0
         p Showing results for "#{query}":
         ol
-          each entry, index in results
+          each entry in decisions
             li
-              a(href=urls[index])= entry
+              a(href=entry.url)= entry.title
+              ul
+                each sentence in entry.sentences
+                  li= sentence
       else
         p No results for "#{query}".
